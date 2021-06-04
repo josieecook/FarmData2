@@ -6,7 +6,7 @@
 <body>
 
 <div id="app">
-  <crop-picker :drop-down-list="cropsList" includes-all>Select a crop:</crop-picker>
+  <crop-picker :drop-down-list="cropsList" includes-all id="crop-picker-element">Select a crop:</crop-picker>
   <field-picker :drop-down-list="fieldsList">Select a field:</field-picker>
 </div>
 
@@ -110,7 +110,7 @@
           return {
             cropsList: ["lettuce", "beans", "corn"],
             fieldsList: ["Chuau", "Jasmine-1", "A"]
-          } 
+          }
       }
     })
   </script>
