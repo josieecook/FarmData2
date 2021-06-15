@@ -12,27 +12,26 @@ new Vue({
     methods: {
         recursiveRequest: function(url) {
             requestURL = url
-            last = 'last'
-
-            if (requestURL == last) {
-                //do nothing, all done!
-            }
-            else {
                 axios.get(requestURL)
                     .then(response => {
-                        requestURL = response.data.next
-                        this.multipageResponse = [].concat(this.multipageResponse, response.data.list);
+                        next = response.data.next
                         
-                        fullRequestURL = response.data.next
-                        requestURL = fullRequestURL.substring(16, fullRequestURL.length)
+                        this.multipageResponse = [].concat(this.multipageResponse, response.data.list);
 
-                        lastRequestURL = response.data.last
-                        last = lastRequestURL.substring(16, lastRequestURL.length)
+                        if (typeof next == 'undefined') {
+                            //do nothing, all done!
+                        }
+                        else {
+                            fullRequestURL = response.data.next
+                            requestURL = fullRequestURL.substring(16, fullRequestURL.length);
 
-                        this.recursiveRequest(requestURL);
-                    })
-            }
-        }
+                            lastRequestURL = response.data.last
+                            last = lastRequestURL.substring(16, lastRequestURL.length);
+
+                            this.recursiveRequest(requestURL);
+                        }
+                })
+        },
     }
 })
 
