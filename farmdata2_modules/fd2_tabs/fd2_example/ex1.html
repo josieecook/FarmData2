@@ -30,6 +30,10 @@
   
     <custom-table :headers="testArray" :rows="testObjectArray" can-edit can-delete @delete-row="deleteFromTestObjectArray" @finish-row-edit="updateTestObjectArray"></custom-table>
 
+    <br>
+
+    <button @click="recursiveRequest('/log.json?type=farm_seeding')">Push</button>
+
 </div>
 
 <script>
@@ -61,6 +65,8 @@ new Vue({
             {id: 12,
             data: [12, 12, 'answome12'],},
         ],
+        multipageResponse: [],
+        testVal: 0
     },
     created() {
         axios
@@ -102,6 +108,30 @@ new Vue({
         },
         fieldChange(selectedOption) {
             this.selectedField = selectedOption;
+        },
+        recursiveRequest: function(url) {
+            this.requestURL = url
+            last = 'last'
+
+            if (this.requestURL == last) {
+                //do nothing, all done!
+            }
+            else {
+                axios.get(this.requestURL)
+                    .then(response => {
+                        this.wholeResponse = response
+                        this.requestURL = response.data.next
+                        this.multipageResponse = [].concat(this.multipageResponse, response.data.list);
+                        
+                        fullRequestURL = response.data.next
+                        this.requestURL = fullRequestURL.substring(16, fullRequestURL.length)
+
+                        lastRequestURL = response.data.last
+                        last = lastRequestURL.substring(16, lastRequestURL.length)
+
+                        this.recursiveRequest(this.requestURL);
+                    })
+            }
         }
     }
 })

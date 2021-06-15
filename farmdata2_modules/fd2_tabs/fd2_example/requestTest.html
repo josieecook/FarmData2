@@ -1,0 +1,40 @@
+<div id='ex1'>
+    <button @click="recursiveRequest('/log.json?type=farm_seeding')">Push</button>
+</div>
+
+<script>
+
+new Vue({
+    el: 'ex1',
+    data: {
+        multipageResponse: [],
+    },
+    methods: {
+        recursiveRequest: function(url) {
+            requestURL = url
+            last = 'last'
+
+            if (requestURL == last) {
+                //do nothing, all done!
+            }
+            else {
+                axios.get(requestURL)
+                    .then(response => {
+                        requestURL = response.data.next
+                        this.multipageResponse = [].concat(this.multipageResponse, response.data.list);
+                        
+                        fullRequestURL = response.data.next
+                        requestURL = fullRequestURL.substring(16, fullRequestURL.length)
+
+                        lastRequestURL = response.data.last
+                        last = lastRequestURL.substring(16, lastRequestURL.length)
+
+                        this.recursiveRequest(requestURL);
+                    })
+            }
+        }
+    }
+})
+
+Vue.config.devtools = true;
+</script>
